@@ -24,7 +24,7 @@ Avant de commencer les exercices, vous devez configurer les secrets GitHub néce
 
 ## ⏱️ Durée Estimée
 
-- **Durée totale :** 6h15 - 7h45
+- **Durée totale :** 6h55 - 8h15
 - **Niveau :** Intermédiaire à Avancé
 
 ---
@@ -66,7 +66,7 @@ main-pipeline.yml (orchestrateur)
 | 2 | ✅ Ajouter le Workflow de Build et Tests | 30 min | [Exercice-02.md](Exercice-02.md) |
 | 3 | 🔍 Ajouter l'Analyse SAST | 45 min | [Exercice-03.md](Exercice-03.md) |
 | 4 | 🔐 Ajouter la Détection de Secrets | 20 min | [Exercice-04.md](Exercice-04.md) |
-| 5 | 📦 Ajouter l'Analyse des Dépendances (SCA) | 30 min | [Exercice-05.md](Exercice-05.md) |
+| 5 | 📦 Ajouter l'Analyse des Dépendances (SCA) | 45 min | [Exercice-05.md](Exercice-05.md) |
 | 6 | 🏗️ Ajouter la Sécurité IaC (Dockerfile) | 30 min | [Exercice-06.md](Exercice-06.md) |
 | 7 | 🐳 Ajouter le Build et Scan Docker | 45 min | [Exercice-07.md](Exercice-07.md) |
 | 8 | 🎯 Ajouter les Tests DAST | 45 min | [Exercice-08.md](Exercice-08.md) |
@@ -75,7 +75,7 @@ main-pipeline.yml (orchestrateur)
 | 11 | 🔔 Ajouter les Notifications | 15 min | [Exercice-11.md](Exercice-11.md) |
 | 12 | ☸️ Déploiement GitOps avec ArgoCD | 45 min | [Exercice-12-ArgoCD.md](Exercice-12-ArgoCD.md) |
 
-**Durée totale estimée :** 6h15 - 7h45
+**Durée totale estimée :** 6h55 - 8h15
 
 ---
 
