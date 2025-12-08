@@ -51,7 +51,7 @@ jobs:
   # ÉTAPE 6 : BUILD & SCAN DOCKER
   # ═══════════════════════════════════════════════
   build-and-scan-docker:
-    needs: [ code-quality-sast, secret-scanning, secure-iac-dockerfile-scan ]
+    needs: [ code-quality-sast, secret-scanning, secure-iac-dockerfile-scan, sca-dependency-scan]
     uses: ./.github/workflows/build-docker-image.yml
     secrets: inherit
 
@@ -78,3 +78,18 @@ jobs:
     needs: dast-dynamic-security-testing
     uses: ./.github/workflows/deploy-production-server.yml
     secrets: inherit
+
+
+  send-notifications:
+    needs: deploy-docker
+    runs-on: ubuntu-latest
+    if: always()
+    steps:
+      - name: Deployment status
+        run: |
+          if [ "${{ needs.deploy-docker.result }}" == "success" ]; then
+            echo "✅ Deployment successful!"
+          else
+            echo "❌ Deployment failed!"
+            exit 1
+          fi
