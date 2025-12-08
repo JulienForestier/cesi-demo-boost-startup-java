@@ -1,30 +1,30 @@
 kind: Namespace
 apiVersion: v1
 metadata:
-  name: cesi1
+  name: cesi5
   labels:
-    kubernetes.io/metadata.name: cesi1
+    kubernetes.io/metadata.name: cesi5
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: ema-demo-java
-  namespace: cesi1
+  name: cesi-demo-java
+  namespace: cesi5
   labels:
-    app: ema-demo-java
+    app: cesi-demo-java
 spec:
   replicas: 2
   selector:
     matchLabels:
-      app: ema-demo-java
+      app: cesi-demo-java
   template:
     metadata:
       labels:
-        app: ema-demo-java
+        app: cesi-demo-java
     spec:
       containers:
-        - name: ema-demo-java
-          image: emanzat/ema-demo-java:c58d8177acfad8c20e751bd0944ef875d18fad20
+        - name: cesi-demo-java
+          image: julienf1998/cesi5-demo-boost-startup:99a083e01eb190e1a8a63ee1fd8c87789c6c40e1
           ports:
             - containerPort: 8080
               name: http
@@ -58,14 +58,14 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: ema-demo-java-service
-  namespace: cesi1
+  name: cesi-demo-java-service
+  namespace: cesi5
   labels:
-    app: ema-demo-java
+    app: cesi-demo-java
 spec:
   type: ClusterIP
   selector:
-    app: ema-demo-java
+    app: cesi-demo-java
   ports:
     - port: 80
       targetPort: 8080
@@ -75,20 +75,20 @@ spec:
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: ema-demo-java-ingress
-  namespace: cesi1
+  name: cesi-demo-java-ingress
+  namespace: cesi5
   annotations:
     # Pour K3s avec Traefik
     traefik.ingress.kubernetes.io/router.entrypoints: web
 spec:
   rules:
-    - host: cesi1.beincloud.io
+    - host: cesi5.beincloud.io
       http:
         paths:
           - path: /
             pathType: Prefix
             backend:
               service:
-                name: ema-demo-java-service
+                name: cesi-demo-java-service
                 port:
                   number: 80
