@@ -25,5 +25,8 @@
         <packageUrl regex="true">^pkg:maven/org\.springframework\.boot/spring-boot(-(data))?mongodb@4\.0\.0$</packageUrl>
         <cve>CVE-2019-2390</cve>
     </suppress>
-
+    <suppress>
+        <notes>test</notes>
+        <packageUrl regex="true">^pkg:maven/org\.springframework\.boot/spring-boot(-data)?-mongodb@4\.0\.0$</packageUrl>
+    </suppress>
 </suppressions>
