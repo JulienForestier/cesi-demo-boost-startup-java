@@ -1,20 +1,29 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <suppressions xmlns="https://jeremylong.github.io/DependencyCheck/dependency-suppression.1.3.xsd">
-    <!-- Exemple : Supprimer un faux positif -->
-    <!--
-    <suppress>
-        <notes>False positive for Spring Boot Actuator</notes>
-        <packageUrl regex="true">^pkg:maven/org\.springframework\.boot/spring\-boot\-actuator.*$</packageUrl>
-        <cve>CVE-2023-XXXXX</cve>
-    </suppress>
-    -->
 
-    <!-- Exemple : Supprimer une CVE non applicable -->
-    <!--
+    <!-- Covers spring-boot-data-mongodb AND spring-boot-mongodb -->
     <suppress>
-        <notes>Cette CVE concerne une fonctionnalité que nous n'utilisons pas</notes>
-        <packageUrl regex="true">^pkg:maven/com\.fasterxml\.jackson\.core/jackson-databind.*$</packageUrl>
-        <cve>CVE-2024-YYYYY</cve>
+        <notes>Suppress Spring Boot MongoDB - CVE-2019-20925</notes>
+        <packageUrl regex="true">^pkg:maven/org\.springframework\.boot/spring-boot(-(data))?mongodb@4\.0\.0$</packageUrl>
+        <cve>CVE-2019-20925</cve>
     </suppress>
-    -->
+
+    <suppress>
+        <notes>Suppress Spring Boot MongoDB - CVE-2019-2386</notes>
+        <packageUrl regex="true">^pkg:maven/org\.springframework\.boot/spring-boot(-(data))?mongodb@4\.0\.0$</packageUrl>
+        <cve>CVE-2019-2386</cve>
+    </suppress>
+
+    <suppress>
+        <notes>Suppress Spring Boot MongoDB - CVE-2021-32036</notes>
+        <packageUrl regex="true">^pkg:maven/org\.springframework\.boot/spring-boot(-(data))?mongodb@4\.0\.0$</packageUrl>
+        <cve>CVE-2021-32036</cve>
+    </suppress>
+
+    <suppress>
+        <notes>Suppress Spring Boot MongoDB - CVE-2019-2390</notes>
+        <packageUrl regex="true">^pkg:maven/org\.springframework\.boot/spring-boot(-(data))?mongodb@4\.0\.0$</packageUrl>
+        <cve>CVE-2019-2390</cve>
+    </suppress>
+
 </suppressions>
