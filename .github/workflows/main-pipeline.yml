@@ -23,21 +23,21 @@ jobs:
   # ÉTAPE 2 : ANALYSE DE SÉCURITÉ STATIQUE (SAST)
   # ═══════════════════════════════════════════════
   code-quality-sast:
-    #needs: build-and-test
+    needs: build-and-test
     uses: ./.github/workflows/code-quality-sast.yml
 
   # ═══════════════════════════════════════════════
   # ÉTAPE 3 : DÉTECTION DE SECRETS
   # ═══════════════════════════════════════════════
   secret-scanning:
-    #needs: build-and-test  # ⚠️ S'exécute en PARALLÈLE avec code-quality-sast
+    needs: build-and-test  # ⚠️ S'exécute en PARALLÈLE avec code-quality-sast
     uses: ./.github/workflows/secret-scanning.yml
 
   # ═══════════════════════════════════════════════
   # ÉTAPE 4 : ANALYSE DES DÉPENDANCES (SCA)
   # ═══════════════════════════════════════════════
   sca-dependency-scan:
-    #needs: build-and-test  # Également en parallèle
+    needs: build-and-test  # Également en parallèle
     uses: ./.github/workflows/sca-dependency-scan.yml
     secrets: inherit  # ⚠️ IMPORTANT pour passer NVD_API_KEY
 
@@ -51,6 +51,6 @@ jobs:
   # ÉTAPE 6 : BUILD & SCAN DOCKER
   # ═══════════════════════════════════════════════
   build-and-scan-docker:
-    #needs: [ code-quality-sast, secret-scanning, secure-iac-dockerfile-scan ]
+    needs: [ code-quality-sast, secret-scanning, secure-iac-dockerfile-scan ]
     uses: ./.github/workflows/build-docker-image.yml
     secrets: inherit
