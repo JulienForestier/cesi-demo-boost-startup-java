@@ -62,7 +62,7 @@ jobs:
     secrets: inherit
 
   send-notifications:
-    needs: [deploy-docker, deploy-k8s]
+    needs: [ deploy-k8s]
     runs-on: ubuntu-latest
     if: always()
     steps:
