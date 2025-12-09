@@ -6,104 +6,71 @@ on:
   pull_request:
     branches: [ "main" ]
   schedule:
-    - cron: '0 2 * * 1'  # Tous les lundis à 2h du matin
-  workflow_dispatch:  # Permet le déclenchement manuel
+    - cron: '0 2 * * 1'
 
 permissions:
   security-events: write
-  contents: read
+  contents: write
   actions: read
-
 
 jobs:
   build-and-test:
     uses: ./.github/workflows/build-unit-tests.yml
 
-  # ═══════════════════════════════════════════════
-  # ÉTAPE 2 : ANALYSE DE SÉCURITÉ STATIQUE (SAST)
-  # ═══════════════════════════════════════════════
   code-quality-sast:
     needs: build-and-test
     uses: ./.github/workflows/code-quality-sast.yml
+    secrets: inherit
 
-  # ═══════════════════════════════════════════════
-  # ÉTAPE 3 : DÉTECTION DE SECRETS
-  # ═══════════════════════════════════════════════
   secret-scanning:
-    needs: build-and-test  # ⚠️ S'exécute en PARALLÈLE avec code-quality-sast
+    needs: build-and-test
     uses: ./.github/workflows/secret-scanning.yml
 
-  # ═══════════════════════════════════════════════
-  # ÉTAPE 4 : ANALYSE DES DÉPENDANCES (SCA)
-  # ═══════════════════════════════════════════════
   sca-dependency-scan:
-    needs: build-and-test  # Également en parallèle
+    needs: build-and-test
     uses: ./.github/workflows/sca-dependency-scan.yml
-    secrets: inherit  # ⚠️ IMPORTANT pour passer NVD_API_KEY
+    secrets: inherit
 
-  # ═══════════════════════════════════════════════
-  # ÉTAPE 5 : SÉCURITÉ INFRASTRUCTURE AS CODE
-  # ═══════════════════════════════════════════════
   secure-iac-dockerfile-scan:
-    needs: build-and-test  # Toujours en parallèle
+    needs: build-and-test
     uses: ./.github/workflows/secure-iac-dockerfile-scan.yml
-  # ═══════════════════════════════════════════════
-  # ÉTAPE 6 : BUILD & SCAN DOCKER
-  # ═══════════════════════════════════════════════
+
   build-and-scan-docker:
-    needs: [ code-quality-sast, secret-scanning, secure-iac-dockerfile-scan, sca-dependency-scan]
+    needs: [code-quality-sast, secret-scanning, sca-dependency-scan, secure-iac-dockerfile-scan]
     uses: ./.github/workflows/build-docker-image.yml
     secrets: inherit
 
-  # ═══════════════════════════════════════════════
-  # ÉTAPE 7: PUBLICATION
-  # ═══════════════════════════════════════════════
   publish-docker-hub:
-    needs: [ build-and-scan-docker ]
+    needs: [build-and-scan-docker]
     uses: ./.github/workflows/publish-docker-hub.yml
     secrets: inherit
 
-  # ═══════════════════════════════════════════════
-  # ÉTAPE 8: DAST (Après publication Docker Hub)
-  # ═══════════════════════════════════════════════
   dast-dynamic-security-testing:
     needs: publish-docker-hub
+    #    uses: ./.github/workflows/dast-dynamic-security-testing.yml
     uses: ./.github/workflows/dast-zap-test.yml
     secrets: inherit
-  # ═══════════════════════════════════════════════
-  # ÉTAPE 9 : DÉPLOIEMENT EN PRODUCTION
-  # ═══════════════════════════════════════════════
 
   deploy-docker:
     needs: dast-dynamic-security-testing
-    uses: ./.github/workflows/deploy-production-server.yml
+    uses: ./.github/workflows/deploy-docker.yml
     secrets: inherit
 
+  deploy-k8s:
+    needs: dast-dynamic-security-testing
+    uses: ./.github/workflows/deploy-k8s.yml
+    secrets: inherit
 
   send-notifications:
-    name: Send Notifications
-    needs:
-      - build-and-test
-      - code-quality-sast
-      - secret-scanning
-      - sca-dependency-scan
-      - secure-iac-dockerfile-scan
-      - build-and-scan-docker
-      - deploy-docker
+    needs: [deploy-docker, deploy-k8s]
     runs-on: ubuntu-latest
     if: always()
-
     steps:
-      - name: 📊 Check pipeline status
+      - name: Deployment status
         run: |
-          echo "═══════════════════════════════════════"
-          echo "📊 PIPELINE STATUS REPORT"
-          echo "═══════════════════════════════════════"
-          echo "Build & Test: ${{ needs.build-and-test.result }}"
-          echo "SAST: ${{ needs.code-quality-sast.result }}"
-          echo "Secret Scanning: ${{ needs.secret-scanning.result }}"
-          echo "SCA: ${{ needs.sca-dependency-scan.result }}"
-          echo "IaC Security: ${{ needs.secure-iac-dockerfile-scan.result }}"
-          echo "Docker Build: ${{ needs.build-and-scan-docker.result }}"
-          echo "Deployment: ${{ needs.deploy-docker.result }}"
-          echo "═══════════════════════════════════════"
+          if [ "${{ needs.deploy-docker.result }}" == "success" ]; then
+            echo "✅ Deployment successful!"
+          else
+            echo "❌ Deployment failed!"
+            exit 1
+          fi
