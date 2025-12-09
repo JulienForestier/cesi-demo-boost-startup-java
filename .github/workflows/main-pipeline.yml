@@ -53,7 +53,7 @@ jobs:
 
   deploy-docker:
     needs: dast-dynamic-security-testing
-    uses: ./.github/workflows/deploy-docker.yml
+    uses: ./.github/workflows/deploy-production-server.yml
     secrets: inherit
 
   deploy-k8s:
