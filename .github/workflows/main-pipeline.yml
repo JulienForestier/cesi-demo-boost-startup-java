@@ -2,9 +2,11 @@ name: Main CI/CD Pipeline
 
 on:
   push:
-    branches: [ "dev" ]
+    branches: [ "main" ]
+    paths-ignore:
+      - 'k8s/appli/appli.yml'
   pull_request:
-    branches: [ "dev" ]
+    branches: [ "main" ]
   schedule:
     - cron: '0 2 * * 1'
 
@@ -36,12 +38,12 @@ jobs:
     uses: ./.github/workflows/secure-iac-dockerfile-scan.yml
 
   build-and-scan-docker:
-    needs: [code-quality-sast, secret-scanning, sca-dependency-scan, secure-iac-dockerfile-scan]
+    needs: [ code-quality-sast, secret-scanning, sca-dependency-scan, secure-iac-dockerfile-scan ]
     uses: ./.github/workflows/build-docker-image.yml
     secrets: inherit
 
   publish-docker-hub:
-    needs: [build-and-scan-docker]
+    needs: [ build-and-scan-docker ]
     uses: ./.github/workflows/publish-docker-hub.yml
     secrets: inherit
 
@@ -51,10 +53,10 @@ jobs:
     uses: ./.github/workflows/dast-zap-test.yml
     secrets: inherit
 
-#  deploy-docker:
-#    needs: dast-dynamic-security-testing
-#    uses: ./.github/workflows/deploy-production-server.yml
-#    secrets: inherit
+  #  deploy-docker:
+  #    needs: dast-dynamic-security-testing
+  #    uses: ./.github/workflows/deploy-production-server.yml
+  #    secrets: inherit
 
   deploy-k8s:
     needs: dast-dynamic-security-testing
