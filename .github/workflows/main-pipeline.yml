@@ -51,10 +51,10 @@ jobs:
     uses: ./.github/workflows/dast-zap-test.yml
     secrets: inherit
 
-  deploy-docker:
-    needs: dast-dynamic-security-testing
-    uses: ./.github/workflows/deploy-production-server.yml
-    secrets: inherit
+#  deploy-docker:
+#    needs: dast-dynamic-security-testing
+#    uses: ./.github/workflows/deploy-production-server.yml
+#    secrets: inherit
 
   deploy-k8s:
     needs: dast-dynamic-security-testing
