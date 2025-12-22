@@ -24,7 +24,7 @@ spec:
           type: RuntimeDefault
       containers:
         - name: cesi5-demo-java
-          image: julienf1998/cesi5-demo-boost-startup:aa1ef230d6f041dbd4b73ddf1d8027cbb39c85db
+          image: julienf1998/cesi5-demo-boost-startup:698e347b0d7b8a4d871822d06d7e64f246fd349e
           ports:
             - containerPort: 8080
               name: http
